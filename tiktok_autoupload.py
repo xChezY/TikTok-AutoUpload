@@ -82,10 +82,13 @@ def convert_tags(text, session):
 
 def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0):
     if schedule_time > 86400 or schedule_time < 900:
-        print("[-] Can not schedule video in more than 10 days or less than 20 minutes")
+        print("[-] Cannot schedule video in more than 10 days or less than 20 minutes")
         return False
     if len(title) > 2200:
         print("[-] The title has to be less than 2200 characters")
+        return False
+    if schedule_time != 0 and visibility_type == 1:
+        print("[-] Private videos cannot be uploaded with schedule")
         return False
 
     session = requests.Session()
