@@ -81,7 +81,7 @@ def convert_tags(text, session):
 
 
 def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0):
-    if schedule_time > 86400 or schedule_time < 900:
+    if schedule_time and (schedule_time > 86400 or schedule_time < 900):
         print("[-] Cannot schedule video in more than 10 days or less than 20 minutes")
         return False
     if len(title) > 2200:
@@ -194,8 +194,7 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
     if brand and brand[-1] == ",":
         brand = brand[:-1]
     markup_text, text_extra = convert_tags(title, session)
-    data = json.dumps(
-        {
+    data = {
             "upload_param": {
                 "video_param": {
                     "text": title,
@@ -209,7 +208,6 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
                 "allow_stitch": allow_stitch,
                 "sound_exemption": 0,
                 "geofencing_regions": [],
-                "schedule_time": schedule_time+int(time.time()),
                 "creation_id": creation_id,
                 "is_uploaded_in_batch": False,
                 "is_enable_playlist": False,
@@ -222,10 +220,10 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
             "video_id": video_id,
             "creation_id": creation_id,
         }
-    )
+    if schedule_time:
+        data["upload_param"]["schedule_time"] = schedule_time+int(time.time())
 
-    r = session.request("POST", url, data=data, headers=headers)
-    print(r.json())
+    r = session.request("POST", url, data=json.dumps(data), headers=headers)
     if r.json()["status_msg"] == "You are posting too fast. Take a rest.":
         print("[-] You are posting too fast, try later again")
         return False
