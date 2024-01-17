@@ -97,14 +97,14 @@ Python:
 upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello world #TikTok @Bob")
 ```
 
-This command will upload your video privately in 100 seconds with the title "Hello #Tiktok @Hello #world @Bob #lol world!" allowing comments and duets:
+This command will upload your video privately in 900 seconds with the title "Hello #Tiktok @Hello #world @Bob #lol world!" allowing comments and duets:
 
 CLI:
 ```
-tiktok_autoupload.py -s f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8 -v "/path/to/file.mp4" -t "Hello #Tiktok @Hello #world @Bob #lol world!"
+tiktok_autoupload.py -s f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8 -v "/path/to/file.mp4" -t "Hello #Tiktok @Hello #world @Bob #lol world!" -d 1 -vi 1 -sc 900
 ```
 
 Python:
 ```python
-upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello #Tiktok @Hello #world @Bob #lol world!", duet=1, visibility=1, schedule=100)
+upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello #Tiktok @Hello #world @Bob #lol world!", duet=1, visibility=1, schedule=900)
 ```
