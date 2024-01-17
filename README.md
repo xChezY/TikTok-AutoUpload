@@ -78,8 +78,11 @@ upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibilit
 - ```brandcontent``` : Enable **(1)**/Disable **(0)** other product placements
 
 **NOTE: The title should not exceed a maximum of 2200 characters**
+
 **NOTE: The maximum duration of your schedule you can set is 86400 seconds (10 days) and the minimum you can set is 900 seconds (15 minutes)**
+
 **NOTE: Private videos cannot be uploaded if you schedule the upload**
+
 ## Examples
 
 This command will upload your video publicly with the title "Hello world #TikTok @Bob" allowing comments:
