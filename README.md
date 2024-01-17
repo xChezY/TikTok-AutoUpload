@@ -16,8 +16,8 @@ The sole requirement for utilizing this project is the TikTok ```sessionid``` co
 
 ## Installation
 
-1. Install Python:
-Ensure you have Python 3 installed on your system. If not, you can download and install it from https://www.python.org/downloads/.
+1. Install Python3.7+:
+Ensure you have Python 3.7+ installed on your system. If not, you can download and install it from https://www.python.org/downloads/.
 
 2. Clone the Git Repository:
 Download the Git repository and move it to a dedicated folder on your machine.
