@@ -1,4 +1,4 @@
-import requests, secrets, string, uuid, zlib, json, datetime, re
+import requests, secrets, string, uuid, zlib, json, re, time
 from requests_auth_aws_sigv4 import AWSSigV4
 
 
@@ -81,8 +81,8 @@ def convert_tags(text, session):
 
 
 def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0):
-    if schedule_time - datetime.datetime.now().timestamp() > 864000:
-        print("[-] Can not schedule video in more than 10 days")
+    if schedule_time > 86400 or schedule_time < 900:
+        print("[-] Can not schedule video in more than 10 days or less than 20 minutes")
         return False
     if len(title) > 2200:
         print("[-] The title has to be less than 2200 characters")
@@ -206,7 +206,7 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
                 "allow_stitch": allow_stitch,
                 "sound_exemption": 0,
                 "geofencing_regions": [],
-                "schedule_time": schedule_time,
+                "schedule_time": schedule_time+int(time.time()),
                 "creation_id": creation_id,
                 "is_uploaded_in_batch": False,
                 "is_enable_playlist": False,
@@ -222,6 +222,7 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
     )
 
     r = session.request("POST", url, data=data, headers=headers)
+    print(r.json())
     if r.json()["status_msg"] == "You are posting too fast. Take a rest.":
         print("[-] You are posting too fast, try later again")
         return False
