@@ -62,7 +62,7 @@ stitch = 0 #OPTIONAL
 visibility = 0 #OPTIONAL
 brandorganic = 0 #OPTIONAL
 brandcontent = 0 #OPTIONAL
-ai_label = #OPTIONAL
+ai_label = 0 #OPTIONAL
 
 upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibility, brandorganic, brandcontent, ai_label)
 ```
