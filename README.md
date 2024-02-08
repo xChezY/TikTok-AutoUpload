@@ -19,10 +19,13 @@ The sole requirement for utilizing this project is the TikTok ```sessionid``` co
 1. Install Python3.7+:
 Ensure you have Python 3.7+ installed on your system. If not, you can download and install it from https://www.python.org/downloads/.
 
-2. Clone the Git Repository:
+2. Install NodeJS 19.3+:
+  Ensure you have NodeJS 19.3+ installed on your system. If not, you can download and install it from https://nodejs.org/en/download/.
+
+4. Clone the Git Repository:
 Download the Git repository and move it to a dedicated folder on your machine.
 
-3. Install Required Libraries:
+5. Install Required Libraries:
 Open a terminal or command prompt and navigate to the folder where you placed the Git repository. Run the following command to install the necessary libraries using pip:
 ```
 python -m pip install -r requirements.txt
@@ -41,7 +44,7 @@ There are two options:
 1) Using the Command-Line-Interface: 
 
 ```
-USAGE: tiktok_autoupload.py -s SESSIONID -v VIDEO -t TITLE [-sc SCHEDULE] [-c comment] [-d DUET] [-st STITCH] [-vi VISIBILITY] [-bo BRANDORGANIC] [-bc BRANDCONTENT]
+USAGE: tiktok_autoupload.py -s SESSIONID -v VIDEO -t TITLE [-sc SCHEDULE] [-c COMMENT] [-d DUET] [-st STITCH] [-vi VISIBILITY] [-bo BRANDORGANIC] [-bc BRANDCONTENT] [-ai AILABEL]
 ```
 
 2) Using the Python file:
@@ -52,15 +55,16 @@ from tiktok_autoupload import upload_video
 sessionid = "SESSIONID"
 video = "VIDEO"
 title = "TITLE"
-schedule = 0
-comment = 1
-duet = 0
-stitch = 0
-visibility = 0
-brandorganic = 0
-brandcontent = 0
+schedule = 0 #OPTIONAL
+comment = 1 #OPTIONAL
+duet = 0 #OPTIONAL
+stitch = 0 #OPTIONAL
+visibility = 0 #OPTIONAL
+brandorganic = 0 #OPTIONAL
+brandcontent = 0 #OPTIONAL
+ai_label = #OPTIONAL
 
-upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibility, brandorganic, brandcontent)
+upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibility, brandorganic, brandcontent, ai_label)
 ```
 
 
@@ -76,6 +80,7 @@ upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibilit
 - ```visibility``` : Set your video to public **(0)**, private **(1)** or friends **(2)**
 - ```brandorganic``` : Enable **(1)**/Disable **(0)** own product placements
 - ```brandcontent``` : Enable **(1)**/Disable **(0)** other product placements
+- ```ailabel``` : Enable **(1)**/Disable **(0)** created by AI
 
 **NOTE: The title should not exceed a maximum of 2200 characters**
 
