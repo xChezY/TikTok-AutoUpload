@@ -1,5 +1,13 @@
-import requests, secrets, string, uuid, zlib, json, re, time
+import requests, secrets, string, uuid, zlib, json, re, time, subprocess
 from requests_auth_aws_sigv4 import AWSSigV4
+
+
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+
+def subprocess_jsvmp(js, user_agent, url):
+        proc = subprocess.Popen(['node', js, url, user_agent], stdout=subprocess.PIPE)
+        return proc.stdout.read().decode('utf-8')
 
 
 def generate_random_string(length, underline):
@@ -64,7 +72,7 @@ def convert_tags(text, session):
             'authority': 'www.tiktok.com',
             'accept': '*/*',
             'accept-language': 'q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6,zh;q=0.5,vi;q=0.4',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            'user-agent': user_agent
             }
 
             r = session.request("GET", url, headers=headers)
@@ -80,8 +88,8 @@ def convert_tags(text, session):
     return result, text_extra
 
 
-def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0):
-    if schedule_time and (schedule_time > 86400 or schedule_time < 900):
+def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0, ai_label=0):
+    if schedule_time and (schedule_time > 864000 or schedule_time < 900):
         print("[-] Cannot schedule video in more than 10 days or less than 20 minutes")
         return False
     if len(title) > 2200:
@@ -177,15 +185,17 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
     # publish video
     url = "https://www.tiktok.com"
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "user-agent": user_agent
     }
 
     r = session.head(url, headers=headers)
     if not assert_success(url, r):
         return False
-
-    url = "https://www.tiktok.com/api/v1/web/project/post/?aid=1988"
-    headers = {"content-type": "application/json"}
+    
+    headers = {
+        "content-type": "application/json",
+        "user-agent": user_agent
+        }
     brand = ""
     if brand_organic_type:
         brand += '"brand_organic_type":2001,'
@@ -213,6 +223,9 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
                 "is_enable_playlist": False,
                 "is_added_to_playlist": False,
                 "tcm_params": '{"commerce_toggle_info":' + brand + "}",
+                "aigc_info":{
+                    "aigc_label_type": ai_label
+                }
             },
             "project_id": project_id,
             "draft": "",
@@ -222,12 +235,24 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
         }
     if schedule_time:
         data["upload_param"]["schedule_time"] = schedule_time+int(time.time())
-
-    r = session.request("POST", url, data=json.dumps(data), headers=headers)
-    if r.json()["status_msg"] == "You are posting too fast. Take a rest.":
-        print("[-] You are posting too fast, try later again")
+    uploaded = False
+    while True:
+        mstoken = session.cookies.get("msToken")
+        xbogus = subprocess_jsvmp("./signer.js", user_agent, f"app_name=tiktok_web&channel=tiktok_web&device_platform=web&aid=1988&msToken={mstoken}")
+        url = f"https://www.tiktok.com/api/v1/web/project/post/?app_name=tiktok_web&channel=tiktok_web&device_platform=web&aid=1988&msToken={mstoken}&X-Bogus={xbogus}"
+        r = session.request("POST", url, data=json.dumps(data), headers=headers)
+        try:
+            if r.json()["status_msg"] == "You are posting too fast. Take a rest.":
+                print("[-] You are posting too fast, try later again")
+                return False
+            uploaded = True
+            break
+        except:
+            print("[-] Could not upload video, retrying...")
+            #time.sleep(5) 
+    if not uploaded:
+        print("[-] Could not upload video")
         return False
-
     url = f"https://www.tiktok.com/api/v1/web/project/list/?aid=1988"
 
     r = session.get(url)
@@ -255,5 +280,6 @@ if __name__ == "__main__":
     parser.add_argument("-vi", "--visibility", type=int, default=0)
     parser.add_argument("-bo", "--brandorganic", type=int, default=0)
     parser.add_argument("-bc", "--brandcontent", type=int, default=0)
+    parser.add_argument("-ai", "--ailabel", type=int, default=0)
     args = parser.parse_args()
-    upload_video(args.sessionid, args.video, args.title, args.schedule, args.comment, args.duet, args.stitch, args.visibility, args.brandorganic, args.brandcontent)
+    upload_video(args.sessionid, args.video, args.title, args.schedule, args.comment, args.duet, args.stitch, args.visibility, args.brandorganic, args.brandcontent, args.ailabel)
