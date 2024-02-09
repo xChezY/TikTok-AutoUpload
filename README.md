@@ -20,7 +20,7 @@ The sole requirement for utilizing this project is the TikTok ```sessionid``` co
 Ensure you have Python 3.7+ installed on your system. If not, you can download and install it from https://www.python.org/downloads/.
 
 2. Install NodeJS 19.3+:
-  Ensure you have NodeJS 19.3+ installed on your system. If not, you can download and install it from https://nodejs.org/en/download/.
+Ensure you have NodeJS 19.3+ installed on your system. If not, you can download and install it from https://nodejs.org/en/download/.
 
 4. Clone the Git Repository:
 Download the Git repository and move it to a dedicated folder on your machine.
@@ -31,11 +31,12 @@ Open a terminal or command prompt and navigate to the folder where you placed th
 python -m pip install -r requirements.txt
 ```
 
-4. Get TikTok Session ID:
+6. Get TikTok Session ID:
 Visit https://www.tiktok.com/ and log in to your account.
 Press F12 to open the developer tools, then go to the Application tab.
 In the Cookies section, find the value associated with the key ```sessionid``` and copy it.
 
+![](https://github.com/xXChezyXx/TikTok-AutoUpload/blob/main/sessionid%20guide.gif)
     
 ## Usage
 
