@@ -88,7 +88,7 @@ def convert_tags(text, session):
     return result, text_extra
 
 
-def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0, ai_label=0):
+def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1, allow_duet=0, allow_stitch=0, visibility_type=0, brand_organic_type=0, branded_content_type=0, ai_label=0, proxy=None):
     if schedule_time and (schedule_time > 864000 or schedule_time < 900):
         print("[-] Cannot schedule video in more than 10 days or less than 20 minutes")
         return False
@@ -102,6 +102,11 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
     session = requests.Session()
     session.cookies.set("sessionid", session_id, domain=".tiktok.com")
     session.cookies.set("tt-target-idc", "useast2a", domain=".tiktok.com")
+    if proxy:
+        session.proxies = {
+            "http": proxy,
+            "https": proxy
+        }
 
     # get project_id
     creation_id = generate_random_string(21, True)
@@ -171,9 +176,14 @@ def upload_video(session_id, video_file, title, schedule_time=0, allow_comment=1
     }
     data = ",".join([f"{i+1}:{crcs[i]}" for i in range(len(crcs))])
 
-    r = requests.post(url, headers=headers, data=data)
-    if not assert_success(url, r):
-        return False
+    if proxy:
+        r = requests.post(url, headers=headers, data=data, proxies=session.proxies)
+        if not assert_success(url, r):
+            return False
+    else:
+        r = requests.post(url, headers=headers, data=data)
+        if not assert_success(url, r):
+            return False
 
     url = f"https://www.tiktok.com/top/v1?Action=CommitUploadInner&Version=2020-11-19&SpaceName=tiktok"
     data = '{"SessionKey":"' + session_key + '","Functions":[{"name":"GetMeta"}]}'
@@ -281,5 +291,6 @@ if __name__ == "__main__":
     parser.add_argument("-bo", "--brandorganic", type=int, default=0)
     parser.add_argument("-bc", "--brandcontent", type=int, default=0)
     parser.add_argument("-ai", "--ailabel", type=int, default=0)
+    parser.add_argument("-p", "--proxy", type=int, default=0)
     args = parser.parse_args()
-    upload_video(args.sessionid, args.video, args.title, args.schedule, args.comment, args.duet, args.stitch, args.visibility, args.brandorganic, args.brandcontent, args.ailabel)
+    upload_video(args.sessionid, args.video, args.title, args.schedule, args.comment, args.duet, args.stitch, args.visibility, args.brandorganic, args.brandcontent, args.ailabel, args.proxy)
