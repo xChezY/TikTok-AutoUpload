@@ -63,6 +63,7 @@ visibility = 0 #OPTIONAL
 brandorganic = 0 #OPTIONAL
 brandcontent = 0 #OPTIONAL
 ai_label = 0 #OPTIONAL
+proxy = None #OPTIONAL
 
 upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibility, brandorganic, brandcontent, ai_label)
 ```
@@ -81,6 +82,7 @@ upload_video(sessionid, video, title, schedule, comment, duet, stitch, visibilit
 - ```brandorganic``` : Enable **(1)**/Disable **(0)** own product placements
 - ```brandcontent``` : Enable **(1)**/Disable **(0)** other product placements
 - ```ailabel``` : Enable **(1)**/Disable **(0)** created by AI
+- ```proxy``` : Send requests with your proxy
 
 **NOTE: The title should not exceed a maximum of 2200 characters**
 
@@ -102,14 +104,14 @@ Python:
 upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello world #TikTok @Bob")
 ```
 
-This command will upload your video privately in 900 seconds with the title "Hello #Tiktok @Hello #world @Bob #lol world!" allowing comments and duets:
+This command will upload your video privately in 900 seconds with the title "Hello #Tiktok @Hello #world @Bob #lol world!" allowing comments and duets with the proxy "http://10.10.10.10:8000":
 
 CLI:
 ```
-tiktok_autoupload.py -s f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8 -v "/path/to/file.mp4" -t "Hello #Tiktok @Hello #world @Bob #lol world!" -d 1 -vi 1 -sc 900
+tiktok_autoupload.py -s f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8 -v "/path/to/file.mp4" -t "Hello #Tiktok @Hello #world @Bob #lol world!" -d 1 -vi 1 -sc 900 -p "http://10.10.10.10:8000"
 ```
 
 Python:
 ```python
-upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello #Tiktok @Hello #world @Bob #lol world!", duet=1, visibility=1, schedule=900)
+upload_video("f6e4b2a1c9d8e7f6a5b4c3d7a9f3c5d8", "/path/to/file.mp4", "Hello #Tiktok @Hello #world @Bob #lol world!", duet=1, visibility=1, schedule=900, proxy="http://10.10.10.10:8000")
 ```
